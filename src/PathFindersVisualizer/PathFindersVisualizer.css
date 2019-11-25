@@ -1,0 +1,12 @@
+.board {
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  background-color: rgb(221, 221, 221);
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+}
