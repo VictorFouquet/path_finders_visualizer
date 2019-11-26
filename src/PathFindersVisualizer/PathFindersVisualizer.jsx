@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Node from "./Node/Node";
 import { bfs } from "../algorithms/bfs";
+import { dfs} from "../algorithms/dfs";
 
 import "./PathFindersVisualizer.css";
 
@@ -43,6 +44,46 @@ export default class PathFindersVisualizer extends Component {
       for (let i = 0; i < 10; i++) {
         setTimeout(() =>{
           console.log(i);
+          if (i % 2 === 0) {
+            document.getElementById(`node-${START_NODE_ROW}-${START_NODE_COL}`).className = "node node-found"
+          } else if (i === 9) {
+            this.cleanWalls();
+          } else {
+            document.getElementById(`node-${START_NODE_ROW}-${START_NODE_COL}`).className = "node node-finish"
+          }
+        }, i*50);
+      }
+      
+    } else {
+      for (let i = 0; i < visitedNodesInOrder.length; i++) {
+        setTimeout(() => {
+          var node = visitedNodesInOrder[i];
+          document.getElementById(`node-${node.row}-${node.col}`).className += "node-visited";
+          if (node.row === FINISH_NODE_ROW && node.col === FINISH_NODE_COL) {
+            const shortestPath = [];
+            var current = visitedNodesInOrder[visitedNodesInOrder.length-1].parent;
+            while (current.row != START_NODE_ROW || current.col != START_NODE_COL) {
+              shortestPath.push(current);
+              current = current.parent;
+            }
+            for (let i = 0; i < shortestPath.length; i++) {
+              setTimeout(() => {
+                var node = shortestPath[i];
+                document.getElementById(`node-${node.row}-${node.col}`).className += "node node-path";
+              }, i*20)
+            }
+            document.getElementById(`node-${node.row}-${node.col}`).className = "node node-found";
+
+          }
+        }, i*2)
+      }
+    }
+  }
+
+  animateDFS(visitedNodesInOrder){
+    if (!visitedNodesInOrder) {
+      for (let i = 0; i < 10; i++) {
+        setTimeout(() =>{
           if (i % 2 === 0) {
             document.getElementById(`node-${START_NODE_ROW}-${START_NODE_COL}`).className = "node node-found"
           } else if (i === 9) {
@@ -134,6 +175,15 @@ export default class PathFindersVisualizer extends Component {
     this.animateBFS(visitedNodesInOrder);
   }
 
+  visualizeDFS() {
+    this.cleanGrid();
+    const { grid } = this.state;
+    const startNode = grid[START_NODE_ROW][START_NODE_COL];
+    const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    const visitedNodesInOrder = dfs(grid, startNode, finishNode);
+    this.animateDFS(visitedNodesInOrder);
+  }
+
   render() {
     const { grid } = this.state;
 
@@ -141,6 +191,9 @@ export default class PathFindersVisualizer extends Component {
       <>
         <button onClick={() => this.visualizeBFS()}>
           Visualize BFS Algorithm
+        </button>
+        <button onClick={() => this.visualizeDFS()}>
+          Visualize DFS Algorithm
         </button>
         <button onClick={() => this.generateMaze()}>
           Generate maze
