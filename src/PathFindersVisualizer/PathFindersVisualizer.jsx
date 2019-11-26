@@ -2,13 +2,14 @@ import React, { Component } from "react";
 import Node from "./Node/Node";
 import { bfs } from "../algorithms/bfs";
 import { dfs} from "../algorithms/dfs";
+import { beam } from "../algorithms/beam";
 
 import "./PathFindersVisualizer.css";
 
-const START_NODE_ROW = 18;
-const START_NODE_COL = 24;
-const FINISH_NODE_ROW = 34;
-const FINISH_NODE_COL = 45;
+var START_NODE_ROW = 18;
+var START_NODE_COL = 24;
+var FINISH_NODE_ROW = 34;
+var FINISH_NODE_COL = 45;
 
 export default class PathFindersVisualizer extends Component {
   constructor(props) {
@@ -43,7 +44,6 @@ export default class PathFindersVisualizer extends Component {
     if (!visitedNodesInOrder) {
       for (let i = 0; i < 10; i++) {
         setTimeout(() =>{
-          console.log(i);
           if (i % 2 === 0) {
             document.getElementById(`node-${START_NODE_ROW}-${START_NODE_COL}`).className = "node node-found"
           } else if (i === 9) {
@@ -57,6 +57,7 @@ export default class PathFindersVisualizer extends Component {
     } else {
       for (let i = 0; i < visitedNodesInOrder.length; i++) {
         setTimeout(() => {
+          document.getElementById('comment').textContent = "Number of extensions : " + i;
           var node = visitedNodesInOrder[i];
           document.getElementById(`node-${node.row}-${node.col}`).className += "node-visited";
           if (node.row === FINISH_NODE_ROW && node.col === FINISH_NODE_COL) {
@@ -78,7 +79,50 @@ export default class PathFindersVisualizer extends Component {
         }, i*2)
       }
     }
-  }
+  } 
+
+  animateBeam(visitedNodesInOrder){
+    if (!visitedNodesInOrder) {
+      for (let i = 0; i < 10; i++) {
+        setTimeout(() =>{
+          if (i % 2 === 0) {
+            document.getElementById(`node-${START_NODE_ROW}-${START_NODE_COL}`).className = "node node-found"
+          } else if (i === 9) {
+            this.cleanWalls();
+          } else {
+            document.getElementById(`node-${START_NODE_ROW}-${START_NODE_COL}`).className = "node node-finish"
+          }
+        }, i*50);
+      }
+      
+    } else {
+      for (let i = 0; i < visitedNodesInOrder.length; i++) {
+        setTimeout(() => {
+          document.getElementById('comment').textContent = "Number of extensions : " + i;
+          var node = visitedNodesInOrder[i];
+          console.log(document.getElementById(`node-${node.row}-${node.col}`))
+          document.getElementById(`node-${node.row}-${node.col}`).className = "node node-visited";
+          if (node.row === FINISH_NODE_ROW && node.col === FINISH_NODE_COL) {
+            const shortestPath = [];
+            var current = visitedNodesInOrder[visitedNodesInOrder.length-1].parent;
+            
+            while (current.row != START_NODE_ROW || current.col != START_NODE_COL) {
+              shortestPath.push(current);
+              current = current.parent;
+            }
+            for (let i = 0; i < shortestPath.length; i++) {
+              setTimeout(() => {
+                var node = shortestPath[i];
+                document.getElementById(`node-${node.row}-${node.col}`).className += "node node-path";
+              }, i*20)
+            }
+            document.getElementById(`node-${node.row}-${node.col}`).className = "node node-found";
+
+          }
+        }, i*2)
+      }
+    }
+  } 
 
   animateDFS(visitedNodesInOrder){
     if (!visitedNodesInOrder) {
@@ -97,6 +141,7 @@ export default class PathFindersVisualizer extends Component {
     } else {
       for (let i = 0; i < visitedNodesInOrder.length; i++) {
         setTimeout(() => {
+          document.getElementById('comment').textContent = "Number of extensions : " + i;
           var node = visitedNodesInOrder[i];
           document.getElementById(`node-${node.row}-${node.col}`).className += "node-visited";
           if (node.row === FINISH_NODE_ROW && node.col === FINISH_NODE_COL) {
@@ -121,11 +166,15 @@ export default class PathFindersVisualizer extends Component {
   }
 
   generateMaze(){
+    START_NODE_ROW = Math.round(Math.random() * (59 - 0) + 0);
+    START_NODE_COL = Math.round(Math.random() * (69 - 0) + 0);
+    FINISH_NODE_ROW = Math.round(Math.random() * (59 - 0) + 0);
+    FINISH_NODE_COL = Math.round(Math.random() * (69 - 0) + 0);
     this.cleanGrid();
     this.cleanWalls()
     const {grid}  = this.state;
-    for (let i = 0; i < 40; i++) {
-      for (let j = 0; j < 50; j ++) {
+    for (let i = 0; i < 60; i++) {
+      for (let j = 0; j < 70; j ++) {
         var dice = Math.random() * (5 - 0) + 0;
         if ( dice > 3.5 ) {
           grid[i][j].isWall = true;
@@ -133,29 +182,29 @@ export default class PathFindersVisualizer extends Component {
         }
       }
     }
-    grid[18][24].isWall = false;
-    grid[34][45].isWall = false;
-    document.getElementById("node-18-24").className = "node node-start"
-    document.getElementById("node-34-45").className = "node node-finish"
+    grid[START_NODE_ROW][START_NODE_COL].isWall = false;
+    grid[FINISH_NODE_ROW][FINISH_NODE_COL].isWall = false;
+    document.getElementById(`node-${START_NODE_ROW}-${START_NODE_COL}`).className = "node node-start"
+    document.getElementById(`node-${FINISH_NODE_ROW}-${FINISH_NODE_COL}`).className = "node node-finish"
   }
 
   cleanGrid(){
     const {grid}  = this.state;
-    for (let i = 0; i < 40; i++) {
-      for (let j = 0; j < 50; j ++) {
+    for (let i = 0; i < 60; i++) {
+      for (let j = 0; j < 70; j ++) {
         if ( !grid[i][j].isWall ) {
           document.getElementById(`node-${i}-${j}`).className = "node ";
         }
       }
     }
-    document.getElementById("node-18-24").className = "node node-start"
-    document.getElementById("node-34-45").className = "node node-finish"
+    document.getElementById(`node-${START_NODE_ROW}-${START_NODE_COL}`).className = "node node-start"
+    document.getElementById(`node-${FINISH_NODE_ROW}-${FINISH_NODE_COL}`).className = "node node-finish"
   }
 
   cleanWalls(){
     const {grid}  = this.state;
-    for (let i = 0; i < 40; i++) {
-      for (let j = 0; j < 50; j ++) {
+    for (let i = 0; i < 60; i++) {
+      for (let j = 0; j < 70; j ++) {
         if ( grid[i][j].isWall ) {
           document.getElementById(`node-${i}-${j}`).className = "node ";
           grid[i][j].isWall = false;
@@ -173,6 +222,15 @@ export default class PathFindersVisualizer extends Component {
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
     const visitedNodesInOrder = bfs(grid, startNode, finishNode);
     this.animateBFS(visitedNodesInOrder);
+  }
+
+  visualizeBeam() {
+    this.cleanGrid();
+    const { grid } = this.state;
+    const startNode = grid[START_NODE_ROW][START_NODE_COL];
+    const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    const visitedNodesInOrder = beam(grid, startNode, finishNode);
+    this.animateBeam(visitedNodesInOrder);
   }
 
   visualizeDFS() {
@@ -195,42 +253,49 @@ export default class PathFindersVisualizer extends Component {
         <button onClick={() => this.visualizeDFS()}>
           Visualize DFS Algorithm
         </button>
+        <button onClick={() => this.visualizeBeam()}>
+          Visualize Beam Algorithm
+        </button>
         <button onClick={() => this.generateMaze()}>
           Generate maze
         </button>
-        <div className="grid">
-          {grid.map((row, rowIdx) => {
-            return (
-              <div className="row" key={rowIdx}>
-                {row.map((node, nodeIdx) => {
-                  const {
-                    row,
-                    col,
-                    isStart,
-                    isFinish,
-                    isWall,
-                    mouseIsPressed
-                  } = node;
-                  return (
-                    <Node
-                      key={nodeIdx}
-                      isStart={isStart}
-                      isFinish={isFinish}
-                      isWall={isWall}
-                      mouseIsPressed={mouseIsPressed}
-                      onMouseDown={(row, col) => this.handleMouseDown(row, col)}
-                      onMouseEnter={(row, col) =>
-                        this.handleMouseEnter(row, col)
-                      }
-                      onMouseUp={() => this.handleMouseUp()}
-                      row={row}
-                      col={col}
-                    ></Node>
-                  );
-                })}
-              </div>
-            );
-          })}
+        <div id="viz">
+          <p id="comment"> 
+          </p>
+          <div className="grid">
+            {grid.map((row, rowIdx) => {
+              return (
+                <div className="row" key={rowIdx}>
+                  {row.map((node, nodeIdx) => {
+                    const {
+                      row,
+                      col,
+                      isStart,
+                      isFinish,
+                      isWall,
+                      mouseIsPressed
+                    } = node;
+                    return (
+                      <Node
+                        key={nodeIdx}
+                        isStart={isStart}
+                        isFinish={isFinish}
+                        isWall={isWall}
+                        mouseIsPressed={mouseIsPressed}
+                        onMouseDown={(row, col) => this.handleMouseDown(row, col)}
+                        onMouseEnter={(row, col) =>
+                          this.handleMouseEnter(row, col)
+                        }
+                        onMouseUp={() => this.handleMouseUp()}
+                        row={row}
+                        col={col}
+                      ></Node>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
         </div>
         <button onClick={() => this.cleanGrid()}>
           Clean Grid
@@ -245,9 +310,9 @@ export default class PathFindersVisualizer extends Component {
 
 const getInitialGrid = () => {
   const grid = [];
-  for (let row = 0; row < 40; row++) {
+  for (let row = 0; row < 60; row++) {
     const currentRow = [];
-    for (let col = 0; col < 50; col++) {
+    for (let col = 0; col < 70; col++) {
       currentRow.push(createNode(col, row));
     }
     grid.push(currentRow);

@@ -1,6 +1,7 @@
 import PathFindersVisualizer from "../PathFindersVisualizer/PathFindersVisualizer";
 
 export function bfs(grid, startNode, finishNode) {
+  const begin = Date.now();
   const visited = [];
   const queue = [];
   const path = [];

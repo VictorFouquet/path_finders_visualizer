@@ -1,6 +1,7 @@
 import PathFindersVisualizer from "../PathFindersVisualizer/PathFindersVisualizer";
 
 export function dfs(grid, startNode, finishNode){
+    const begin = Date.now();
     const visited = [];
     const stack = []; 
     const path = [];
@@ -22,8 +23,7 @@ export function dfs(grid, startNode, finishNode){
               }
             }
             if (neighbor[0] === finishNode.row && neighbor[1] === finishNode.col) {
-                
-                return path;
+              return path;
             }
         }
     }
@@ -40,7 +40,6 @@ function isInside(x, y, l, L) {
     const legalMoves = [];
     for (var move of moves) {
       if (move[0] >= 0 && move[0] <= l && move[1] >= 0 && move[1] <= L) {
-        console.log([move[0], move[1]])
         legalMoves.push([move[0], move[1]]);
       }
     }

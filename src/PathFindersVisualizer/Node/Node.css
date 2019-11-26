@@ -14,7 +14,7 @@
 }
 
 .node-wall {
-  background-color: blue;
+  background-color: #252d38;
 }
 
 .node-found {
@@ -22,7 +22,7 @@
 }
 
 .node-visited {
-  background-color: grey;
+  background-color: rgb(99, 119, 122);
 }
 
 .node-path {

@@ -2,8 +2,8 @@
   margin: 50px auto auto auto;
   display: flex;
   flex-direction: column;
-  width: 750px;
-  border: 5px solid rgb(122, 99, 99);
+  width: 1050px;
+  border: 8px solid rgb(122, 99, 99);
 }
 
 .row {
@@ -15,4 +15,9 @@
 
 button {
   margin-top: 50px;
+}
+
+
+p {
+  color: white;
 }
