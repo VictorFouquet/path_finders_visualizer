@@ -11,7 +11,6 @@ export function beam(grid, startNode, finishNode) {
     const L = grid[0].length - 1;
     const total = l*L;
     const level = [];
-    const levelWeights = [];
     var n = 0;
     var node = "";
     visited[startNode.row + ", " + startNode.col] = true;

@@ -3,6 +3,7 @@ import Node from "./Node/Node";
 import { bfs } from "../algorithms/bfs";
 import { dfs} from "../algorithms/dfs";
 import { beam } from "../algorithms/beam";
+import { hillClimbing } from "../algorithms/hill_climbing";
 
 import "./PathFindersVisualizer.css";
 
@@ -10,7 +11,8 @@ var START_NODE_ROW = 18;
 var START_NODE_COL = 24;
 var FINISH_NODE_ROW = 34;
 var FINISH_NODE_COL = 45;
-
+var anim_short = true;
+var animating = false;
 export default class PathFindersVisualizer extends Component {
   constructor(props) {
     super(props);
@@ -41,6 +43,11 @@ export default class PathFindersVisualizer extends Component {
   }
 
   animate(visitedNodesInOrder){
+    if (anim_short) {
+      var speed = 5;
+    } else {
+      var speed = 2;
+    }
     if (!visitedNodesInOrder) {
       for (let i = 0; i < 10; i++) {
         setTimeout(() =>{
@@ -53,13 +60,16 @@ export default class PathFindersVisualizer extends Component {
           }
         }, i*20);
       }
+      animating = false;
       
     } else {
       for (let i = 0; i < visitedNodesInOrder.length; i++) {
         setTimeout(() => {
           document.getElementById('comment').textContent = "Number of extensions : " + i;
           var node = visitedNodesInOrder[i];
-          document.getElementById(`node-${node.row}-${node.col}`).className += "node-visited";
+          console.log(node);
+          console.log(document.getElementById(`node-${node.row}-${node.col}`))
+          document.getElementById(`node-${node.row}-${node.col}`).className = "node node-visited";
           if (node.row === FINISH_NODE_ROW && node.col === FINISH_NODE_COL) {
             const shortestPath = [];
             var current = visitedNodesInOrder[visitedNodesInOrder.length-1].parent;
@@ -73,10 +83,10 @@ export default class PathFindersVisualizer extends Component {
                 document.getElementById(`node-${node.row}-${node.col}`).className += "node node-path";
               }, i*20)
             }
+            animating = false;
             document.getElementById(`node-${node.row}-${node.col}`).className = "node node-found";
-
           }
-        }, i*10)
+        }, i*speed)
       }
     }
   } 
@@ -132,42 +142,70 @@ export default class PathFindersVisualizer extends Component {
   }
 
   visualizeBFS() {
-    this.cleanGrid();
-    const { grid } = this.state;
-    const startNode = grid[START_NODE_ROW][START_NODE_COL];
-    const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
-    const visitedNodesInOrder = bfs(grid, startNode, finishNode);
-    this.animate(visitedNodesInOrder);
+    if (!animating) {
+      animating = true;
+      anim_short = false;
+      this.cleanGrid();
+      const { grid } = this.state;
+      const startNode = grid[START_NODE_ROW][START_NODE_COL];
+      const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+      const visitedNodesInOrder = bfs(grid, startNode, finishNode);
+      this.animate(visitedNodesInOrder);
+    }
   }
 
   visualizeBeam() {
-    this.cleanGrid();
-    const { grid } = this.state;
-    const startNode = grid[START_NODE_ROW][START_NODE_COL];
-    const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
-    const visitedNodesInOrder = beam(grid, startNode, finishNode);
-    this.animate(visitedNodesInOrder);
+    if (!animating) {
+      animating = true;
+      anim_short = true;
+      this.cleanGrid();
+      const { grid } = this.state;
+      const startNode = grid[START_NODE_ROW][START_NODE_COL];
+      const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+      const visitedNodesInOrder = beam(grid, startNode, finishNode);
+      this.animate(visitedNodesInOrder);
+    }
   }
 
   visualizeDFS() {
-    this.cleanGrid();
-    const { grid } = this.state;
-    const startNode = grid[START_NODE_ROW][START_NODE_COL];
-    const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
-    const visitedNodesInOrder = dfs(grid, startNode, finishNode);
-    this.animate(visitedNodesInOrder);
+    if (!animating) {
+      animating = true;
+      anim_short = false;
+      this.cleanGrid();
+      const { grid } = this.state;
+      const startNode = grid[START_NODE_ROW][START_NODE_COL];
+      const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+      const visitedNodesInOrder = dfs(grid, startNode, finishNode);
+      this.animate(visitedNodesInOrder);
+    }
+  }
+
+  visualizeHillClimbing() {
+    if (!animating) {
+      animating = true;
+      anim_short = true;
+      this.cleanGrid();
+      const { grid } = this.state;
+      const startNode = grid[START_NODE_ROW][START_NODE_COL];
+      const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+      const visitedNodesInOrder = hillClimbing(grid, startNode, finishNode);
+      this.animate(visitedNodesInOrder);
+    }
   }
 
   render() {
     const { grid } = this.state;
-
+ 
     return (
       <>
-        <button onClick={() => this.visualizeBFS()}>
-          Visualize BFS Algorithm
-        </button>
         <button onClick={() => this.visualizeDFS()}>
           Visualize DFS Algorithm
+        </button>
+        <button onClick={() => this.visualizeHillClimbing()}>
+          Visualize Hill Climbing Algorithm
+        </button>
+        <button onClick={() => this.visualizeBFS()}>
+          Visualize BFS Algorithm
         </button>
         <button onClick={() => this.visualizeBeam()}>
           Visualize Beam Algorithm
