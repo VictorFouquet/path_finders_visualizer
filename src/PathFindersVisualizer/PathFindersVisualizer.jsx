@@ -4,6 +4,7 @@ import { bfs } from "../algorithms/bfs";
 import { dfs} from "../algorithms/dfs";
 import { beam } from "../algorithms/beam";
 import { hillClimbing } from "../algorithms/hill_climbing";
+import { bestFirst } from "../algorithms/best_first";
 
 import "./PathFindersVisualizer.css";
 
@@ -92,26 +93,28 @@ export default class PathFindersVisualizer extends Component {
   } 
 
   generateMaze(){
-    START_NODE_ROW = Math.round(Math.random() * (59 - 0) + 0);
-    START_NODE_COL = Math.round(Math.random() * (69 - 0) + 0);
-    FINISH_NODE_ROW = Math.round(Math.random() * (59 - 0) + 0);
-    FINISH_NODE_COL = Math.round(Math.random() * (69 - 0) + 0);
-    this.cleanGrid();
-    this.cleanWalls()
-    const {grid}  = this.state;
-    for (let i = 0; i < 60; i++) {
-      for (let j = 0; j < 70; j ++) {
-        var dice = Math.random() * (5 - 0) + 0;
-        if ( dice > 3.5 ) {
-          grid[i][j].isWall = true;
-          document.getElementById(`node-${i}-${j}`).className = "node node-wall";
+    if (!animating) {
+      START_NODE_ROW = Math.round(Math.random() * (59 - 0) + 0);
+      START_NODE_COL = Math.round(Math.random() * (69 - 0) + 0);
+      FINISH_NODE_ROW = Math.round(Math.random() * (59 - 0) + 0);
+      FINISH_NODE_COL = Math.round(Math.random() * (69 - 0) + 0);
+      this.cleanGrid();
+      this.cleanWalls()
+      const {grid}  = this.state;
+      for (let i = 0; i < 60; i++) {
+        for (let j = 0; j < 70; j ++) {
+          var dice = Math.random() * (5 - 0) + 0;
+          if ( dice > 3.5 ) {
+            grid[i][j].isWall = true;
+            document.getElementById(`node-${i}-${j}`).className = "node node-wall";
+          }
         }
       }
+      grid[START_NODE_ROW][START_NODE_COL].isWall = false;
+      grid[FINISH_NODE_ROW][FINISH_NODE_COL].isWall = false;
+      document.getElementById(`node-${START_NODE_ROW}-${START_NODE_COL}`).className = "node node-start"
+      document.getElementById(`node-${FINISH_NODE_ROW}-${FINISH_NODE_COL}`).className = "node node-finish"
     }
-    grid[START_NODE_ROW][START_NODE_COL].isWall = false;
-    grid[FINISH_NODE_ROW][FINISH_NODE_COL].isWall = false;
-    document.getElementById(`node-${START_NODE_ROW}-${START_NODE_COL}`).className = "node node-start"
-    document.getElementById(`node-${FINISH_NODE_ROW}-${FINISH_NODE_COL}`).className = "node node-finish"
   }
 
   cleanGrid(){
@@ -193,6 +196,19 @@ export default class PathFindersVisualizer extends Component {
     }
   }
 
+  visualizeBestFirst() {
+    if (!animating) {
+      animating = true;
+      anim_short = true;
+      this.cleanGrid();
+      const { grid } = this.state;
+      const startNode = grid[START_NODE_ROW][START_NODE_COL];
+      const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+      const visitedNodesInOrder = bestFirst(grid, startNode, finishNode);
+      this.animate(visitedNodesInOrder);
+    }
+  }
+
   render() {
     const { grid } = this.state;
  
@@ -209,6 +225,9 @@ export default class PathFindersVisualizer extends Component {
         </button>
         <button onClick={() => this.visualizeBeam()}>
           Visualize Beam Algorithm
+        </button>
+        <button onClick={() => this.visualizeBestFirst()}>
+          Visualize Best First Algorithm
         </button>
         <button onClick={() => this.generateMaze()}>
           Generate maze
