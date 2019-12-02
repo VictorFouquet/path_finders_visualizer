@@ -40,7 +40,7 @@ export default class PathFindersVisualizer extends Component {
     this.setState({ mouseIsPressed: false });
   }
 
-  animateBFS(visitedNodesInOrder){
+  animate(visitedNodesInOrder){
     if (!visitedNodesInOrder) {
       for (let i = 0; i < 10; i++) {
         setTimeout(() =>{
@@ -51,7 +51,7 @@ export default class PathFindersVisualizer extends Component {
           } else {
             document.getElementById(`node-${START_NODE_ROW}-${START_NODE_COL}`).className = "node node-finish"
           }
-        }, i*50);
+        }, i*20);
       }
       
     } else {
@@ -76,94 +76,10 @@ export default class PathFindersVisualizer extends Component {
             document.getElementById(`node-${node.row}-${node.col}`).className = "node node-found";
 
           }
-        }, i*2)
+        }, i*10)
       }
     }
   } 
-
-  animateBeam(visitedNodesInOrder){
-    if (!visitedNodesInOrder) {
-      for (let i = 0; i < 10; i++) {
-        setTimeout(() =>{
-          if (i % 2 === 0) {
-            document.getElementById(`node-${START_NODE_ROW}-${START_NODE_COL}`).className = "node node-found"
-          } else if (i === 9) {
-            this.cleanWalls();
-          } else {
-            document.getElementById(`node-${START_NODE_ROW}-${START_NODE_COL}`).className = "node node-finish"
-          }
-        }, i*50);
-      }
-      
-    } else {
-      for (let i = 0; i < visitedNodesInOrder.length; i++) {
-        setTimeout(() => {
-          document.getElementById('comment').textContent = "Number of extensions : " + i;
-          var node = visitedNodesInOrder[i];
-          console.log(document.getElementById(`node-${node.row}-${node.col}`))
-          document.getElementById(`node-${node.row}-${node.col}`).className = "node node-visited";
-          if (node.row === FINISH_NODE_ROW && node.col === FINISH_NODE_COL) {
-            const shortestPath = [];
-            var current = visitedNodesInOrder[visitedNodesInOrder.length-1].parent;
-            
-            while (current.row != START_NODE_ROW || current.col != START_NODE_COL) {
-              shortestPath.push(current);
-              current = current.parent;
-            }
-            for (let i = 0; i < shortestPath.length; i++) {
-              setTimeout(() => {
-                var node = shortestPath[i];
-                document.getElementById(`node-${node.row}-${node.col}`).className += "node node-path";
-              }, i*20)
-            }
-            document.getElementById(`node-${node.row}-${node.col}`).className = "node node-found";
-
-          }
-        }, i*2)
-      }
-    }
-  } 
-
-  animateDFS(visitedNodesInOrder){
-    if (!visitedNodesInOrder) {
-      for (let i = 0; i < 10; i++) {
-        setTimeout(() =>{
-          if (i % 2 === 0) {
-            document.getElementById(`node-${START_NODE_ROW}-${START_NODE_COL}`).className = "node node-found"
-          } else if (i === 9) {
-            this.cleanWalls();
-          } else {
-            document.getElementById(`node-${START_NODE_ROW}-${START_NODE_COL}`).className = "node node-finish"
-          }
-        }, i*50);
-      }
-      
-    } else {
-      for (let i = 0; i < visitedNodesInOrder.length; i++) {
-        setTimeout(() => {
-          document.getElementById('comment').textContent = "Number of extensions : " + i;
-          var node = visitedNodesInOrder[i];
-          document.getElementById(`node-${node.row}-${node.col}`).className += "node-visited";
-          if (node.row === FINISH_NODE_ROW && node.col === FINISH_NODE_COL) {
-            const shortestPath = [];
-            var current = visitedNodesInOrder[visitedNodesInOrder.length-1].parent;
-            while (current.row != START_NODE_ROW || current.col != START_NODE_COL) {
-              shortestPath.push(current);
-              current = current.parent;
-            }
-            for (let i = 0; i < shortestPath.length; i++) {
-              setTimeout(() => {
-                var node = shortestPath[i];
-                document.getElementById(`node-${node.row}-${node.col}`).className += "node node-path";
-              }, i*20)
-            }
-            document.getElementById(`node-${node.row}-${node.col}`).className = "node node-found";
-
-          }
-        }, i*2)
-      }
-    }
-  }
 
   generateMaze(){
     START_NODE_ROW = Math.round(Math.random() * (59 - 0) + 0);
@@ -221,7 +137,7 @@ export default class PathFindersVisualizer extends Component {
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
     const visitedNodesInOrder = bfs(grid, startNode, finishNode);
-    this.animateBFS(visitedNodesInOrder);
+    this.animate(visitedNodesInOrder);
   }
 
   visualizeBeam() {
@@ -230,7 +146,7 @@ export default class PathFindersVisualizer extends Component {
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
     const visitedNodesInOrder = beam(grid, startNode, finishNode);
-    this.animateBeam(visitedNodesInOrder);
+    this.animate(visitedNodesInOrder);
   }
 
   visualizeDFS() {
@@ -239,7 +155,7 @@ export default class PathFindersVisualizer extends Component {
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
     const visitedNodesInOrder = dfs(grid, startNode, finishNode);
-    this.animateDFS(visitedNodesInOrder);
+    this.animate(visitedNodesInOrder);
   }
 
   render() {
