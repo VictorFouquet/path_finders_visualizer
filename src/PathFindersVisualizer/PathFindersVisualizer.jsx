@@ -64,6 +64,8 @@ export default class PathFindersVisualizer extends Component {
       animating = false;
       
     } else {
+      document.getElementById('pathLength').textContent = "Path length : 0";
+      document.getElementById('ratio').textContent = "Path finding cost : 0.00";
       for (let i = 0; i < visitedNodesInOrder.length; i++) {
         setTimeout(() => {
           document.getElementById('comment').textContent = "Number of extensions : " + i;
@@ -80,11 +82,16 @@ export default class PathFindersVisualizer extends Component {
             }
             for (let i = 0; i < shortestPath.length; i++) {
               setTimeout(() => {
+                document.getElementById('pathLength').textContent = "Path length : " + i;
                 var node = shortestPath[i];
                 document.getElementById(`node-${node.row}-${node.col}`).className += "node node-path";
               }, i*20)
+              
             }
-            animating = false;
+            setTimeout(() => {
+              document.getElementById('ratio').textContent = "Path finding cost : " + ((visitedNodesInOrder.length + shortestPath.length)/2).toFixed(2);
+              animating = false;
+            }, shortestPath.length*20);
             document.getElementById(`node-${node.row}-${node.col}`).className = "node node-found";
           }
         }, i*speed)
@@ -94,6 +101,9 @@ export default class PathFindersVisualizer extends Component {
 
   generateMaze(){
     if (!animating) {
+      document.getElementById('pathLength').textContent = "Path length : 0";
+      document.getElementById('ratio').textContent = "Path finding cost : 0.00";
+      document.getElementById('comment').textContent = "Number of extensions : 0";
       START_NODE_ROW = Math.round(Math.random() * (59 - 0) + 0);
       START_NODE_COL = Math.round(Math.random() * (69 - 0) + 0);
       FINISH_NODE_ROW = Math.round(Math.random() * (59 - 0) + 0);
@@ -233,7 +243,14 @@ export default class PathFindersVisualizer extends Component {
           Generate maze
         </button>
         <div id="viz">
-          <p id="comment"> 
+          <p id="comment">
+            Number of extensions : 0 
+          </p>
+          <p id="pathLength">
+            Path length : 0 
+          </p>
+          <p id="ratio">
+            Path finding cost : 0.00
           </p>
           <div className="grid">
             {grid.map((row, rowIdx) => {

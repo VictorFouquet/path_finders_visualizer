@@ -17,8 +17,7 @@ export function bestFirst(grid, startNode, finishNode) {
         weight: (finishNode.row-startNode.row)**2 + (finishNode.col-startNode.col)**2
     });
 
-    for (let a = 0; a <200; a++) {
-        console.log(stack);
+    while (node.row + "," + node.col != finishNode.row + "," + finishNode.col) {
         heapSort(stack);
         node = stack.shift();
 
@@ -30,12 +29,11 @@ export function bestFirst(grid, startNode, finishNode) {
 
         var x = node.row;
         var y = node.col;
-        console.log(node, x, y)
         var neighbors = isInside(x, y, l, L, grid);
-        console.log(neighbors);
+
         for (var neighbor of neighbors) {
             if (!grid[neighbor[0]][neighbor[1]].isWall) {
-                if (!visited[neighbor]) {
+                if (!visited[neighbor[0] + ", " + neighbor[1]]) {
                     stack.unshift({ 
                             row: neighbor[0], 
                             col: neighbor[1], 
