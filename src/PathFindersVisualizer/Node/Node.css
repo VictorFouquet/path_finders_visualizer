@@ -1,8 +1,8 @@
 .node {
-  width: 15px;
-  height: 15px;
-  outline: 0.1px solid rgb(54, 54, 54);
-  background-color: transparent;
+  width: 11px;
+  height: 11px;
+  outline: 0.1px solid rgb(95, 95, 95);
+  background-color: #dddddd;
 }
 
 .node-finish {
@@ -14,7 +14,7 @@
 }
 
 .node-wall {
-  background-color: #252d38;
+  background-color: #2f3844;
 }
 
 .node-found {
@@ -22,9 +22,9 @@
 }
 
 .node-visited {
-  background-color: rgb(99, 119, 122);
+  background-color: rgb(123, 138, 160);
 }
 
 .node-path {
-  background-color: rgb(250, 245, 177);
+  background-color: rgb(176, 171, 112);
 }

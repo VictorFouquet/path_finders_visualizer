@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import Node from "./Node/Node";
+import Stat from "./Stat/Stat";
+import Description from "./Description/Description";
 import { bfs } from "../algorithms/bfs";
 import { dfs} from "../algorithms/dfs";
 import { beam } from "../algorithms/beam";
@@ -43,7 +45,7 @@ export default class PathFindersVisualizer extends Component {
     this.setState({ mouseIsPressed: false });
   }
 
-  animate(visitedNodesInOrder){
+  animate(visitedNodesInOrder, ext, len, ratio){
     if (anim_short) {
       var speed = 5;
     } else {
@@ -64,11 +66,11 @@ export default class PathFindersVisualizer extends Component {
       animating = false;
       
     } else {
-      document.getElementById('pathLength').textContent = "Path length : 0";
-      document.getElementById('ratio').textContent = "Path finding cost : 0.00";
+      document.getElementById(len).textContent = "Path length : 0";
+      document.getElementById(ratio).textContent = "Path finding cost : 0.00";
       for (let i = 0; i < visitedNodesInOrder.length; i++) {
         setTimeout(() => {
-          document.getElementById('comment').textContent = "Number of extensions : " + i;
+          document.getElementById(ext).textContent = "Number of extensions : " + i;
           var node = visitedNodesInOrder[i];
           console.log(node);
           console.log(document.getElementById(`node-${node.row}-${node.col}`))
@@ -82,14 +84,14 @@ export default class PathFindersVisualizer extends Component {
             }
             for (let i = 0; i < shortestPath.length; i++) {
               setTimeout(() => {
-                document.getElementById('pathLength').textContent = "Path length : " + i;
+                document.getElementById(len).textContent = "Path length : " + i;
                 var node = shortestPath[i];
                 document.getElementById(`node-${node.row}-${node.col}`).className += "node node-path";
               }, i*20)
               
             }
             setTimeout(() => {
-              document.getElementById('ratio').textContent = "Path finding cost : " + ((visitedNodesInOrder.length + shortestPath.length)/2).toFixed(2);
+              document.getElementById(ratio).textContent = "Path finding cost : " + ((visitedNodesInOrder.length + shortestPath.length)/2).toFixed(2);
               animating = false;
             }, shortestPath.length*20);
             document.getElementById(`node-${node.row}-${node.col}`).className = "node node-found";
@@ -101,9 +103,21 @@ export default class PathFindersVisualizer extends Component {
 
   generateMaze(){
     if (!animating) {
-      document.getElementById('pathLength').textContent = "Path length : 0";
-      document.getElementById('ratio').textContent = "Path finding cost : 0.00";
-      document.getElementById('comment').textContent = "Number of extensions : 0";
+      document.getElementById('bfs-length').textContent = "Path length : 0";
+      document.getElementById('bfs-ratio').textContent = "Path finding cost : 0.00";
+      document.getElementById('bfs-ext').textContent = "Number of extensions : 0";
+      document.getElementById('dfs-length').textContent = "Path length : 0";
+      document.getElementById('dfs-ratio').textContent = "Path finding cost : 0.00";
+      document.getElementById('dfs-ext').textContent = "Number of extensions : 0";
+      document.getElementById('hc-length').textContent = "Path length : 0";
+      document.getElementById('hc-ratio').textContent = "Path finding cost : 0.00";
+      document.getElementById('hc-ext').textContent = "Number of extensions : 0";
+      document.getElementById('beam-length').textContent = "Path length : 0";
+      document.getElementById('beam-ratio').textContent = "Path finding cost : 0.00";
+      document.getElementById('beam-ext').textContent = "Number of extensions : 0";
+      document.getElementById('best-length').textContent = "Path length : 0";
+      document.getElementById('best-ratio').textContent = "Path finding cost : 0.00";
+      document.getElementById('best-ext').textContent = "Number of extensions : 0";
       START_NODE_ROW = Math.round(Math.random() * (59 - 0) + 0);
       START_NODE_COL = Math.round(Math.random() * (69 - 0) + 0);
       FINISH_NODE_ROW = Math.round(Math.random() * (59 - 0) + 0);
@@ -163,7 +177,7 @@ export default class PathFindersVisualizer extends Component {
       const startNode = grid[START_NODE_ROW][START_NODE_COL];
       const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
       const visitedNodesInOrder = bfs(grid, startNode, finishNode);
-      this.animate(visitedNodesInOrder);
+      this.animate(visitedNodesInOrder, "bfs-ext", "bfs-length", "bfs-ratio");
     }
   }
 
@@ -176,7 +190,7 @@ export default class PathFindersVisualizer extends Component {
       const startNode = grid[START_NODE_ROW][START_NODE_COL];
       const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
       const visitedNodesInOrder = beam(grid, startNode, finishNode);
-      this.animate(visitedNodesInOrder);
+      this.animate(visitedNodesInOrder, "beam-ext", "beam-length", "beam-ratio");
     }
   }
 
@@ -189,7 +203,7 @@ export default class PathFindersVisualizer extends Component {
       const startNode = grid[START_NODE_ROW][START_NODE_COL];
       const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
       const visitedNodesInOrder = dfs(grid, startNode, finishNode);
-      this.animate(visitedNodesInOrder);
+      this.animate(visitedNodesInOrder, "dfs-ext", "dfs-length", "dfs-ratio");
     }
   }
 
@@ -202,7 +216,7 @@ export default class PathFindersVisualizer extends Component {
       const startNode = grid[START_NODE_ROW][START_NODE_COL];
       const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
       const visitedNodesInOrder = hillClimbing(grid, startNode, finishNode);
-      this.animate(visitedNodesInOrder);
+      this.animate(visitedNodesInOrder, "hc-ext", "hc-length", "hc-ratio");
     }
   }
 
@@ -215,7 +229,7 @@ export default class PathFindersVisualizer extends Component {
       const startNode = grid[START_NODE_ROW][START_NODE_COL];
       const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
       const visitedNodesInOrder = bestFirst(grid, startNode, finishNode);
-      this.animate(visitedNodesInOrder);
+      this.animate(visitedNodesInOrder, "best-ext", "best-length", "best-ratio");
     }
   }
 
@@ -224,73 +238,73 @@ export default class PathFindersVisualizer extends Component {
  
     return (
       <>
-        <button onClick={() => this.visualizeDFS()}>
-          Visualize DFS Algorithm
-        </button>
-        <button onClick={() => this.visualizeHillClimbing()}>
-          Visualize Hill Climbing Algorithm
-        </button>
-        <button onClick={() => this.visualizeBFS()}>
-          Visualize BFS Algorithm
-        </button>
-        <button onClick={() => this.visualizeBeam()}>
-          Visualize Beam Algorithm
-        </button>
-        <button onClick={() => this.visualizeBestFirst()}>
-          Visualize Best First Algorithm
-        </button>
-        <button onClick={() => this.generateMaze()}>
-          Generate maze
-        </button>
-        <div id="viz">
-          <p id="comment">
-            Number of extensions : 0 
-          </p>
-          <p id="pathLength">
-            Path length : 0 
-          </p>
-          <p id="ratio">
-            Path finding cost : 0.00
-          </p>
-          <div className="grid">
-            {grid.map((row, rowIdx) => {
-              return (
-                <div className="row" key={rowIdx}>
-                  {row.map((node, nodeIdx) => {
-                    const {
-                      row,
-                      col,
-                      isStart,
-                      isFinish,
-                      isWall,
-                      mouseIsPressed
-                    } = node;
-                    return (
-                      <Node
-                        key={nodeIdx}
-                        isStart={isStart}
-                        isFinish={isFinish}
-                        isWall={isWall}
-                        mouseIsPressed={mouseIsPressed}
-                        onMouseDown={(row, col) => this.handleMouseDown(row, col)}
-                        onMouseEnter={(row, col) =>
-                          this.handleMouseEnter(row, col)
-                        }
-                        onMouseUp={() => this.handleMouseUp()}
-                        row={row}
-                        col={col}
-                      ></Node>
-                    );
-                  })}
-                </div>
-              );
-            })}
+        <div className="navbar">
+          <div className="logo">Algorithms Visualizer</div>
+          <div className="btn-container">
+            <button onClick={() => this.visualizeDFS()}>
+              Visualize DFS Algorithm
+            </button>
+            <button onClick={() => this.visualizeHillClimbing()}>
+              Visualize Hill Climbing Algorithm
+            </button>
+            <button onClick={() => this.visualizeBFS()}>
+              Visualize BFS Algorithm
+            </button>
+            <button onClick={() => this.visualizeBeam()}>
+              Visualize Beam Algorithm
+            </button>
+            <button onClick={() => this.visualizeBestFirst()}>
+              Visualize Best First Algorithm
+            </button>
           </div>
         </div>
-        <button onClick={() => this.cleanGrid()}>
+        <button className="btn-maze" onClick={() => this.generateMaze()}>
+          Generate maze !
+        </button>
+        <div>
+          <div className = "visualizer">
+            <Stat/>
+            <div className="grid">
+              {grid.map((row, rowIdx) => {
+                return (
+                  <div className="row" key={rowIdx}>
+                    {row.map((node, nodeIdx) => {
+                      const {
+                        row,
+                        col,
+                        isStart,
+                        isFinish,
+                        isWall,
+                        mouseIsPressed
+                      } = node;
+                      return (
+                        <Node
+                          key={nodeIdx}
+                          isStart={isStart}
+                          isFinish={isFinish}
+                          isWall={isWall}
+                          mouseIsPressed={mouseIsPressed}
+                          onMouseDown={(row, col) => this.handleMouseDown(row, col)}
+                          onMouseEnter={(row, col) =>
+                            this.handleMouseEnter(row, col)
+                          }
+                          onMouseUp={() => this.handleMouseUp()}
+                          row={row}
+                          col={col}
+                        ></Node>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
+            <Description/>
+          </div>
+        </div>
+        <button className = "btn-grid" onClick={() => this.cleanGrid()}>
           Clean Grid
         </button>
-        <button onClick={() => this.cleanWalls()}>
+        <button className = "btn-grid" onClick={() => this.cleanWalls()}>
           Clean Walls
         </button>
       </>
