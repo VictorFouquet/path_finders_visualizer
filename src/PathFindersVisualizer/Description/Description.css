@@ -1,9 +1,11 @@
 .description {
-    margin-top: 30px;
-    margin-bottom: 30px;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    padding: auto;
+    width: 30%;
     background-color: #ddd;
     color: #252d38;
-    padding: 34px 34px;
+    padding: 2%;
     border: solid 8px rgb(122, 99, 99);
     box-shadow: inset 0px 0px 8px 5px rgb(63, 64, 65);
     display: flex;
@@ -11,9 +13,8 @@
 }
 
 .card{
-    padding: 10px;
-    margin: 5px 20px 5px 20px;
-    height: 100%;
+    padding: 3%;
+    margin: auto;
     background-color: #252d38;
     color: #ddd;
     border: solid 3px rgb(122, 99, 99);
