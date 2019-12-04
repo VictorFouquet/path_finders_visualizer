@@ -1,6 +1,5 @@
 .stat{
     width: 30%;
-    padding: auto;
     margin-top: 2%;
     margin-bottom: 2%;
     background-color: #ddd;
@@ -14,7 +13,8 @@
 
 .card{
     padding: 1%;
-    margin: auto;
+    margin: 1%;
+    height: 100%;
     background-color: #252d38;
     color: #ddd;
     border: solid 3px rgb(122, 99, 99);

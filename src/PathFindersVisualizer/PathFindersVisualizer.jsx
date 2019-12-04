@@ -118,9 +118,9 @@ export default class PathFindersVisualizer extends Component {
       document.getElementById('best-length').textContent = "Path length : 0";
       document.getElementById('best-ratio').textContent = "Path finding cost : 0.00";
       document.getElementById('best-ext').textContent = "Number of extensions : 0";
-      START_NODE_ROW = Math.round(Math.random() * (59 - 0) + 0);
+      START_NODE_ROW = Math.round(Math.random() * (49 - 0) + 0);
       START_NODE_COL = Math.round(Math.random() * (69 - 0) + 0);
-      FINISH_NODE_ROW = Math.round(Math.random() * (59 - 0) + 0);
+      FINISH_NODE_ROW = Math.round(Math.random() * (49 - 0) + 0);
       FINISH_NODE_COL = Math.round(Math.random() * (69 - 0) + 0);
       this.cleanGrid();
       this.cleanWalls()
