@@ -306,6 +306,7 @@ export default class PathFindersVisualizer extends Component {
         <button className = "btn-grid" onClick={() => this.cleanWalls()}>
           Clean Walls
         </button>
+        <div className="footer">Created by Victor Fouquet - 2019</div>
       </>
     );
   }
