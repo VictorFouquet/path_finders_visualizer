@@ -125,7 +125,7 @@ export default class PathFindersVisualizer extends Component {
       this.cleanGrid();
       this.cleanWalls()
       const {grid}  = this.state;
-      for (let i = 0; i < 60; i++) {
+      for (let i = 0; i < 50; i++) {
         for (let j = 0; j < 70; j ++) {
           var dice = Math.random() * (5 - 0) + 0;
           if ( dice > 3.5 ) {
@@ -143,7 +143,7 @@ export default class PathFindersVisualizer extends Component {
 
   cleanGrid(){
     const {grid}  = this.state;
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 50; i++) {
       for (let j = 0; j < 70; j ++) {
         if ( !grid[i][j].isWall ) {
           document.getElementById(`node-${i}-${j}`).className = "node ";
@@ -156,7 +156,7 @@ export default class PathFindersVisualizer extends Component {
 
   cleanWalls(){
     const {grid}  = this.state;
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 50; i++) {
       for (let j = 0; j < 70; j ++) {
         if ( grid[i][j].isWall ) {
           document.getElementById(`node-${i}-${j}`).className = "node ";
@@ -261,7 +261,7 @@ export default class PathFindersVisualizer extends Component {
         <button className="btn-maze" onClick={() => this.generateMaze()}>
           Generate maze !
         </button>
-        <div>
+
           <div className = "visualizer">
             <Stat/>
             <div className="grid">
@@ -300,7 +300,6 @@ export default class PathFindersVisualizer extends Component {
             </div>
             <Description/>
           </div>
-        </div>
         <button className = "btn-grid" onClick={() => this.cleanGrid()}>
           Clean Grid
         </button>
@@ -314,7 +313,7 @@ export default class PathFindersVisualizer extends Component {
 
 const getInitialGrid = () => {
   const grid = [];
-  for (let row = 0; row < 60; row++) {
+  for (let row = 0; row < 50; row++) {
     const currentRow = [];
     for (let col = 0; col < 70; col++) {
       currentRow.push(createNode(col, row));
